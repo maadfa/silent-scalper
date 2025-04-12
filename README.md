@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🏥 Silent Scalper - Hospital Data Pipeline
 
 This AWS cloud project helps hospitals securely upload and process files like reports or records. Files uploaded to an S3 bucket automatically trigger a Lambda function, which stores the data in DynamoDB. It also includes CloudWatch monitoring and SNS for alerting.
@@ -18,3 +19,6 @@ This AWS cloud project helps hospitals securely upload and process files like re
 5. Optional: Use API Gateway to let apps access this system securely.
 
 
+=======
+# silent-scalper
+>>>>>>> 48991a79e3e5df83cb7cca320aa74a67ef36bd27
