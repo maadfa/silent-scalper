@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Silent Scalper - AWS Cloud Hospital Pipeline
+
+Resources:
+  HospitalS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: silent-scalper-hospital-data
+
+  ProcessFileFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ../lambda/
+      Handler: process_file.lambda_handler
+      Runtime: python3.9
+      Events:
+        FileUploadEvent:
+          Type: S3
+          Properties:
+            Bucket: !Ref HospitalS3Bucket
+            Events: s3:ObjectCreated:*
+      Environment:
+        Variables:
+          DYNAMODB_TABLE: HospitalDataTable
+
+  HospitalDataTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: HospitalDataTable
+      AttributeDefinitions:
+        - AttributeName: FileName
+          AttributeType: S
+      KeySchema:
+        - AttributeName: FileName
+          KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+
+  AlarmTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: HospitalAlerts
+
+Outputs:
+  S3BucketName:
+    Value: !Ref HospitalS3Bucket
+  LambdaFunctionName:
+    Value: !Ref ProcessFileFunction
+  DynamoDBTableName:
+    Value: !Ref HospitalDataTable
+  SNSTopicARN:
+    Value: !Ref AlarmTopic
